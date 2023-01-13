@@ -1,0 +1,38 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: my-gateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: My-GateWay-Service Global Filter
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: first-service
+          uri: http://localhost:8081 # ???? ?? http://localhost:8000/user ? ???? http://localhost:8081 ? ???
+          predicates:
+            - Path=/first-service/** # ?? gateway ??? /first-service/**? ???? ?? first-service? ?????? ??
+          filters:
+            - CustomFilter
+            - LoggingFilter
+        - id: second-service
+          uri: http://localhost:8082 # ???? ?? http://localhost:8000/user ? ???? http://localhost:8082 ? ???
+          predicates:
+            - Path=/second-service/** # ?? gateway ??? /second-service/**? ???? ?? second-service? ?????? ??
+          filters:
+            - CustomFilter
+            - LoggingFilter
+
+
